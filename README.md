@@ -14,7 +14,6 @@ A [PyTorch](https://pytorch.org/) implementation of [RetinaFace: Single-stage De
 | Dataset | performace |
 |:-|:-:|
 | FDDB(pytorch) | 97.93% |
-<p align="center"><img src="curve/FDDB_DiscROC.png" width="640"\></p>
 
 ## Installation
 ##### Clone and install
