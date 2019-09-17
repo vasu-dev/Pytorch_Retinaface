@@ -8,7 +8,6 @@ A [PyTorch](https://pytorch.org/) implementation of [RetinaFace: Single-stage De
 | Pytorch (same parameter with Mxnet) | 86.85 % | 85.84% | 79.69% |
 | Pytorch (original image scale) | 90.58 % | 87.94% | 73.96% |
 | Original Mxnet | - | - | 79.1% |
-<p align="center"><img src="curve/r_3.png" width="640"\></p>
 
 ## FDDB Performance When using Mobilenet0.25 as backbone net.
 | Dataset | performace |
@@ -17,7 +16,7 @@ A [PyTorch](https://pytorch.org/) implementation of [RetinaFace: Single-stage De
 
 ## Installation
 ##### Clone and install
-1. git clone https://github.com/biubug6/Pytorch_Retinaface.git
+1. git clone https://github.com/vasu-dev/Pytorch_Retinaface.git
 
 2. Pytorch version 1.1.0+ and torchvision 0.3.0+ are needed.
 
