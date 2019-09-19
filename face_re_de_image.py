@@ -11,6 +11,9 @@ import cv2
 from models.retinaface import RetinaFace
 from utils.box_utils import decode, decode_landm
 from utils.timer import Timer
+import numpy as np
+import face_recognition
+import pickle
 
 torch.set_grad_enabled(False)
 net = RetinaFace(phase="test")
@@ -21,6 +24,7 @@ VIZ_THRESHOLD = 0.50
 
 resize = 1
 
+face_data = pickle.loads(open("face_encodings.pickle", "rb").read())
 
 def check_keys(model, pretrained_state_dict):
     ckpt_keys = set(pretrained_state_dict.keys())
@@ -114,7 +118,7 @@ def face_detector(frame):
             continue
         b = list(map(int, b))
         
-        margin = 10
+        margin = 5
 
         x1,y1,x2,y2 = b[0], b[1], b[2], b[3]
         
@@ -138,8 +142,27 @@ def face_detector(frame):
         if y_b > img_h:
             y_a = max(y_a - (y_b - img_h), 0)
             y_b = img_h
-        
-        cv2.rectangle(img_raw, (x_a, y_a), (x_b, y_b), (255, 0, 255), 1)
+
+        name = ""
+        face = frame[y_a:y_b,x_a:x_b]
+        rgb = cv2.cvtColor(face, cv2.COLOR_BGR2RGB)
+        encodings = face_recognition.face_encodings(rgb,[(y_a,x_b,y_b,x_a)])
+        matches = face_recognition.compare_faces(face_data["encodings"],encodings[0],tolerance=0.55)
+        if True in matches:
+            matchedIdxs = [i for (i, b) in enumerate(matches) if b]
+            counts = {}
+ 
+            for i in matchedIdxs:
+                name = face_data["names"][i]
+                counts[name] = counts.get(name, 0) + 1
+ 
+            name = max(counts, key=counts.get)
+        cv2.putText(img_raw, name, (x_a+10, y_a), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 255), 1, cv2.LINE_AA)
+        cv2.rectangle(img_raw, (x_a, y_a), (x_b, y_b), (255, 0, 0), 1)
         bboxs.append([x_a,y_a,x_b,y_b])
         
     return img_raw,bboxs
+
+frame = cv2.imread("aa.jpeg")
+outOpencvDnn, bbox = face_detector(frame)
+cv2.imwrite("aa_out.jpg", outOpencvDnn)
